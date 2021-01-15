@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import withAuth from 'hoc/withAuth';
 import TextSection from 'components/TextSection';
+import Layout from 'components/Layout';
+import Page from 'components/Page';
 
 const Policy = () => {
   const [policy, setPolicy] = useState(null);
@@ -45,12 +47,14 @@ const Policy = () => {
   };
 
   return (
-    <div>
-      <TextSection title="Policy reference" text={policy_ref} />
-      <TextSection title="Cover type" text={cover} />
-      <TextSection title="Address" text={getAddress(address)} />
-      <TextSection title="Car" text={getCar(vehicle)} />
-    </div>
+    <Layout>
+      <Page title="Policy">
+        <TextSection title="Policy reference" text={policy_ref} />
+        <TextSection title="Cover type" text={cover} />
+        <TextSection title="Car" text={getCar(vehicle)} />
+        <TextSection title="Address" text={getAddress(address)} />
+      </Page>
+    </Layout>
   );
 };
 

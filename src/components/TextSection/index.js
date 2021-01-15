@@ -1,4 +1,5 @@
 import React from 'react';
+import './TextSection.scss';
 
 const TextSection = ({ title, text }) => (
   <div className="text-section">

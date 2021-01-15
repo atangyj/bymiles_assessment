@@ -1,0 +1,13 @@
+@import "css/breakpoints";
+
+$module: "layout";
+
+.#{$module}{
+    margin: 0 15px;
+
+    @include desktop {
+        width: 50%;
+        margin: 0 auto;
+    }
+   
+}
