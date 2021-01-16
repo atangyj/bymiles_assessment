@@ -1,12 +1,12 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-import Login from 'pages/Login';
+import { Redirect, Route } from 'react-router-dom';
 
-const withAuth = (component) => {
+
+
+const withAuth = (Component, redirect) => {
   if (sessionStorage.getItem('token')) {
-    return component;
+    return <Component />
   }
-  return Login;
+  return <Redirect to={`/login?redirect=${redirect}`} />
 };
 
 export default withAuth;

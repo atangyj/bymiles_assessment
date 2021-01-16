@@ -28,12 +28,12 @@ const Login = (props) => {
     e.preventDefault();
     let token = await fetchToken();
     await sessionStorage.setItem('token', JSON.stringify(token));
-    global.location = props.location.pathname;
+    const query = new URLSearchParams(props.location.search);
+    props.history.push(query.get('redirect')??"/");
   };
 
   if (sessionStorage.getItem('token')) {
-    global.location = '/';
-    return;
+    props.history.push('/');
   }
 
   return (
@@ -46,6 +46,7 @@ const Login = (props) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            data-testid="input-username"
           />
           <InputField
             type="password"
@@ -54,8 +55,11 @@ const Login = (props) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            data-testid="input-password"
           />
-          <button type="submit">Login</button>
+          <button type="submit" data-testid="btn-login">
+            Login
+          </button>
         </form>
       </Page>
     </Layout>

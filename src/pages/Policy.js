@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import withAuth from 'hoc/withAuth';
 import TextSection from 'components/TextSection';
 import Layout from 'components/Layout';
 import Page from 'components/Page';
@@ -19,11 +18,13 @@ const Policy = () => {
       .then((data) => data);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     const token = sessionStorage.getItem('token');
-    let data = await fetchPolicy(token);
-    setPolicy(data);
-  }, {});
+    (async function () {
+      let data = await fetchPolicy(token);
+      setPolicy(data);
+    })();
+  }, []);
 
   const { policy_ref, cover, address } = policy?.policy ?? '';
   const { vehicle } = policy ?? '';
@@ -37,7 +38,6 @@ const Policy = () => {
   };
 
   const getCar = (data) => {
-    console.log(data);
     const { make, model, colour, reg } = data ?? '';
     let str = '';
     [make, model, colour, reg].forEach((property) => {
@@ -49,13 +49,13 @@ const Policy = () => {
   return (
     <Layout>
       <Page title="Policy">
-        <TextSection title="Policy reference" text={policy_ref} />
-        <TextSection title="Cover type" text={cover} />
-        <TextSection title="Car" text={getCar(vehicle)} />
-        <TextSection title="Address" text={getAddress(address)} />
+        <TextSection title="Policy reference" text={policy_ref} datatest="policy-ref" />
+        <TextSection title="Cover type" text={cover} datatest="cover" />
+        <TextSection title="Car" text={getCar(vehicle)} datatest="car" />
+        <TextSection title="Address" text={getAddress(address)} datatest="address" />
       </Page>
     </Layout>
   );
 };
 
-export default withAuth(Policy);
+export default Policy;
