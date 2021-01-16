@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import InputField from 'components/InputField';
 import Layout from 'components/Layout';
 import Page from 'components/Page';
+import ErrorMessage from 'components/ErrorMessage';
 
 const Login = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const fetchToken = async () => {
+  const fetchToken = async (username, password) => {
     return fetch('https://api.bybits.co.uk/auth/token', {
       method: 'POST',
       headers: {
@@ -20,16 +22,31 @@ const Login = (props) => {
         type: 'USER_PASSWORD_AUTH',
       }),
     })
-      .then((response) => response.json())
-      .then((data) => data.access_token);
+      .then((response) => {
+        if (!response.ok) {
+          throw 'Network response was not ok';
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (!data.access_token) {
+          throw 'Invalid username or password';
+        }
+        return data.access_token;
+      });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let token = await fetchToken();
-    await sessionStorage.setItem('token', JSON.stringify(token));
-    const query = new URLSearchParams(props.location.search);
-    props.history.push(query.get('redirect')??"/");
+    try {
+      let token = await fetchToken(username, password);
+      await sessionStorage.setItem('token', token);
+      const query = new URLSearchParams(props.location.search);
+      props.history.push(query.get('redirect') ?? '/');
+    } catch (e) {
+      console.log(e);
+      setErrorMessage(e);
+    }
   };
 
   if (sessionStorage.getItem('token')) {
@@ -61,6 +78,7 @@ const Login = (props) => {
             Login
           </button>
         </form>
+        {errorMessage && <ErrorMessage error={errorMessage} />}
       </Page>
     </Layout>
   );
